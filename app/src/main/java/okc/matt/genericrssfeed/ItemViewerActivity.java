@@ -22,7 +22,7 @@ import MattsRSSUtils.RSSParser;
 
 
 public class ItemViewerActivity extends AppCompatActivity {
-
+    //fsdg
     public ArrayList<RSSItem> feedItems;
     private RSSItemAdapter adapter;
     private RecyclerView itemsRecyclerView;

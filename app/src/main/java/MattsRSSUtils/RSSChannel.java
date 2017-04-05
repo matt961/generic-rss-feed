@@ -3,9 +3,6 @@ package MattsRSSUtils;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
- * Created by matt on 30/03/17.
- */
 public class RSSChannel implements Serializable {
     private String title,
             description,

@@ -5,9 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
-/**
- * Created by matt on 29/03/17.
- */
 public class RSSItem implements Serializable {
     private String title = "",
             description = "",

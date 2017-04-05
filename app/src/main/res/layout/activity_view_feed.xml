@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="okc.matt.genericrssfeed.ChannelSelectActivity">
-
+    <!--- -->
     <android.support.design.widget.AppBarLayout
         android:id="@+id/viewFeedAppBar"
         android:layout_width="match_parent"
