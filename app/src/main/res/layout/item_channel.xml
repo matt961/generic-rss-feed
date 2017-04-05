@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:clickable="true"
-    android:elevation="3dp"
-    android:orientation="vertical"
-    android:padding="8dp">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="4dp"
+              android:background="@color/feed_item_bg_dark"
+              android:clickable="true"
+              android:elevation="5dp"
+              android:orientation="vertical"
+              android:padding="8dp">
 
     <TextView
         android:id="@+id/titleText"
@@ -15,14 +17,14 @@
         android:textAlignment="viewStart"
         android:textAllCaps="false"
         android:textAppearance="@android:style/TextAppearance.Material.Headline"
-        android:typeface="serif" />
+        android:typeface="serif"/>
 
     <TextView
         android:id="@+id/lastpubdateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="@android:style/TextAppearance.Material.Small"
-        android:textStyle="italic" />
+        android:textStyle="italic"/>
 
     <TextView
         android:id="@+id/descriptionText"
@@ -30,13 +32,13 @@
         android:layout_height="wrap_content"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
     <TextView
         android:id="@+id/categoryText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="textEnd"
-        android:textStyle="italic" />
+        android:textStyle="italic"/>
 
 </LinearLayout>
