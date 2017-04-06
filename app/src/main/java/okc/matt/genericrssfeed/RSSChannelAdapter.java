@@ -1,12 +1,20 @@
 package okc.matt.genericrssfeed;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -64,6 +72,7 @@ public class RSSChannelAdapter extends RecyclerView.Adapter<RSSChannelAdapter.Vi
                 lastpubdateText = holder.lastpubdateText,
                 descriptionText = holder.descriptionText,
                 categoryText = holder.categoryText;
+        final ImageView channelImage = holder.channelImage;
         titleText.setText(channel.getTitle());
         if (channel.getLastBuildDate() != null) {
             lastpubdateText.setText(channel.getLastBuildDate().toString());
@@ -71,6 +80,33 @@ public class RSSChannelAdapter extends RecyclerView.Adapter<RSSChannelAdapter.Vi
             lastpubdateText.setText(String.format("Downloaded %s", new Date().toString()));
         descriptionText.setText(channel.getDescription());
         categoryText.setText(channel.getCategory());
+        if (channel.getChannelImageURL() != null || !channel.getChannelImageURL().isEmpty()) {
+            try {
+                final URL imgUrl = new URL(channel.getChannelImageURL());
+                new AsyncTask<URL, Void, Bitmap>() {
+                    @Override
+                    protected Bitmap doInBackground(URL... params) {
+                        try {
+                            return BitmapFactory.decodeStream(imgUrl.openStream());
+                        } catch (IOException ioe) {
+                            Log.v("RSSChannelAdapter", String.format("Stream could not be opened/read at \"%s\".", imgUrl.toString()), ioe);
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Bitmap bitmap) {
+                        super.onPostExecute(bitmap);
+                        if (bitmap != null) {
+                            channelImage.setImageBitmap(bitmap);
+                            channelImage.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }.execute();
+            } catch (MalformedURLException mfe) {
+                Log.v("RSSChannelAdapter", String.format("Could not download image at \"%s\".", channel.getChannelImageURL()), mfe);
+            }
+        }
     }
 
     @Override
@@ -86,6 +122,7 @@ public class RSSChannelAdapter extends RecyclerView.Adapter<RSSChannelAdapter.Vi
                 lastpubdateText,
                 descriptionText,
                 categoryText;
+        public ImageView channelImage;
 
         public ViewHolder(final View itemView) {
             super(itemView);
@@ -94,6 +131,7 @@ public class RSSChannelAdapter extends RecyclerView.Adapter<RSSChannelAdapter.Vi
             lastpubdateText = (TextView) itemView.findViewById(R.id.lastpubdateText);
             descriptionText = (TextView) itemView.findViewById(R.id.descriptionText);
             categoryText = (TextView) itemView.findViewById(R.id.categoryText);
+            channelImage = (ImageView) itemView.findViewById(R.id.channelImageView);
 
             // for deleting a feed
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
