@@ -4,64 +4,85 @@
                 xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="4dp"
+                android:layout_margin="8dp"
                 android:background="@color/feed_item_bg_dark"
                 android:clickable="true"
                 android:elevation="5dp"
-                android:padding="8dp">
+                android:padding="8dp"
+                tools:layout_editor_absoluteX="4dp"
+                tools:layout_editor_absoluteY="29dp">
 
     <TextView
         android:id="@+id/titleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/channelImageView"
         android:textAlignment="viewStart"
-        android:textAllCaps="false"
+        android:textAllCaps="true"
         android:textAppearance="@android:style/TextAppearance.Material.Headline"
-        android:typeface="serif"/>
+        android:typeface="serif"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/channelImageView"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/lastpubdateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/titleText"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/channelImageView"
         android:textAppearance="@android:style/TextAppearance.Material.Small"
-        android:textStyle="italic"/>
+        android:textStyle="bold|italic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/channelImageView"
+        app:layout_constraintTop_toBottomOf="@+id/titleText"/>
 
     <TextView
         android:id="@+id/descriptionText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/lastpubdateText"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/channelImageView"
+        android:linksClickable="true"
+        android:padding="4dp"
         android:textAlignment="viewStart"
         android:textAllCaps="false"
-        android:textStyle="bold"/>
+        android:textSize="14sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/channelImageView"
+        app:layout_constraintTop_toBottomOf="@+id/lastpubdateText"/>
 
     <TextView
         android:id="@+id/categoryText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/descriptionText"
-        android:layout_marginEnd="100dp"
+        android:layout_marginEnd="8dp"
+        android:layout_toStartOf="@+id/channelImageView"
         android:textAlignment="textEnd"
-        android:textStyle="italic"/>
+        android:textStyle="bold|italic"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/channelImageView"
+        app:layout_constraintTop_toBottomOf="@+id/descriptionText"/>
 
     <ImageView
         android:id="@+id/channelImageView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/categoryText"
-        android:layout_alignEnd="@+id/descriptionText"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:contentDescription="Image"
-        android:visibility="visible"/>
+        android:layout_width="85dp"
+        android:layout_height="85dp"
+        android:adjustViewBounds="true"
+        android:contentDescription="@string/channel_image_description"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.512"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"/>
 
 </RelativeLayout>

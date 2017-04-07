@@ -9,10 +9,16 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import MattsRSSUtils.RSSItem;
 
 public class RSSItemAdapter extends RecyclerView.Adapter<RSSItemAdapter.ViewHolder> {
+
+    // this should be in MattsRSSUtils.RSSParser but I had issues with the classes not being
+    // loaded at RUNTIME. Could not resolve the issue.
+    private final Pattern descriptionPuller = Pattern.compile("<p>((.|\\n)*?)<");
 
     private ArrayList<RSSItem> channelItems;
     private Context context;
@@ -54,13 +60,48 @@ public class RSSItemAdapter extends RecyclerView.Adapter<RSSItemAdapter.ViewHold
                 authorText = holder.authorText,
                 linkText = holder.linkText,
                 pubDateText = holder.pubDateText;
-        titleText.setText(item.getTitle());
+        titleText.setText(item.getTitle().trim());
         if (item.getPubDate() != null) {
             pubDateText.setText(item.getPubDate().toString());
         } else
             pubDateText.setText(String.format("Downloaded %s", new Date().toString()));
-        linkText.setText(item.getLink());
-        authorText.setText(item.getAuthor());
+
+        if (!item.getDescription().trim().isEmpty()) {
+            final Matcher descriptionContents = descriptionPuller.matcher(item.getDescription());
+            StringBuilder description = new StringBuilder();
+            if (descriptionContents.find()) {
+                if (!descriptionContents.group(1).trim().isEmpty()) {
+                    description
+                            .append(" ")
+                            .append(descriptionContents.group(1).trim());
+                    if (description.toString().endsWith(".")) {
+                        description.append("..");
+                    } else
+                        description.append("...");
+                    String descText = description.toString().replaceAll("(\\r|\\n|\\r\\n)+", " ").trim();
+                    if (descText.length() > 1024)
+                        linkText.setText(item.getLink());
+                    else
+                        linkText.setText(descText);
+                } else {
+                    linkText.setText(item.getLink());
+                }
+            } else {
+                if (item.getDescription().length() > 512)
+                    linkText.setText(item.getLink());
+                else
+                    linkText.setText(item.getDescription());
+            }
+        } else {
+            linkText.setText(item.getLink());
+        }
+
+        if (item.getAuthor().trim().isEmpty()) {
+            authorText.setVisibility(View.GONE);
+        } else {
+            authorText.setVisibility(View.VISIBLE);
+            authorText.setText(item.getAuthor());
+        }
     }
 
     @Override

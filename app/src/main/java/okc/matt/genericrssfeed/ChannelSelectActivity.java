@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.net.MalformedURLException;
@@ -43,6 +44,8 @@ public class ChannelSelectActivity extends AppCompatActivity {
 
     private RecyclerView channelRecyclerView;
 
+    private ProgressBar progressBar;
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +68,9 @@ public class ChannelSelectActivity extends AppCompatActivity {
 
         Collections.addAll(feedUrlsList, feedsFromPrefs);
 
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        progressBar = (ProgressBar) findViewById(R.id.channelLoadProgressBar);
         channelRecyclerView = (RecyclerView) findViewById(R.id.channelRV);
         adapter = new RSSChannelAdapter(this, rssChannels);
         channelRecyclerView.setAdapter(adapter);
@@ -77,7 +82,7 @@ public class ChannelSelectActivity extends AppCompatActivity {
                 printRssChannels("onItemLongClick");
                 adapter.notifyItemRemoved(position);
                 updateSharedPrefs();
-                View mainView = findViewById(R.id.activity_channel_select_id);
+                final View mainView = findViewById(R.id.activity_channel_select_id);
                 if (mainView != null) {
                     Snackbar.make(mainView, String.format("Removed %s from your list.", toDelete.getTitle()), Snackbar.LENGTH_LONG)
                             .setAction("Undo", new View.OnClickListener() {
@@ -85,6 +90,7 @@ public class ChannelSelectActivity extends AppCompatActivity {
                                 public void onClick(View v) {
                                     rssChannels.add(position, toDelete);
                                     adapter.notifyItemInserted(position);
+                                    channelRecyclerView.scrollToPosition(position);
                                     updateSharedPrefs();
                                 }
                             })
@@ -102,6 +108,24 @@ public class ChannelSelectActivity extends AppCompatActivity {
                 startActivity(viewFeed);
             }
         });
+
+        channelRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && fab.isShown())
+                    fab.hide();
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    fab.show();
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
         AsyncFeedDownloader fd;
         if (feedsFromPrefs.length != 0) {
             // download the feeds and get the parsed RSSChannels and put them in rssChannels ArrayList
@@ -109,7 +133,6 @@ public class ChannelSelectActivity extends AppCompatActivity {
             fd.execute(feedsFromPrefs);
         }
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         if (fab != null) {
             fab.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -174,11 +197,7 @@ public class ChannelSelectActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_clearlist) {
+        if (id == R.id.action_clearlist) {
             clearFeedsFromSharedPrefs();
             return true;
         }
@@ -186,14 +205,20 @@ public class ChannelSelectActivity extends AppCompatActivity {
     }
 
     private class AsyncFeedDownloader extends AsyncTask<String, Void, Integer> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected Integer doInBackground(String... params) {
             if (params.length == 0) return null;
-
             // init to default location if one new feed is to be added (for RSSChannelAdapter)
             // 0 for no items added yet for adapter.notifyItemRangeInserted
+            // newFeedsCount not in use currently...
             Integer newFeedsCount = 0;
-
             for (String url : params) {
                 if (url.isEmpty()) {
                     continue;
@@ -211,7 +236,7 @@ public class ChannelSelectActivity extends AppCompatActivity {
                                     String.format("Added new channel \"%s\"",
                                             newChannel.getTitle()));
                             newChannel.setLink(url);
-                            rssChannels.add(newChannel);
+                            rssChannels.add(0, newChannel);
                             updateSharedPrefs();
                             printRssChannels("AsyncFeedDownloader");
                             newFeedsCount++;
@@ -233,8 +258,9 @@ public class ChannelSelectActivity extends AppCompatActivity {
                                 "Updated RSSChannelAdapter with %d items."
                                 , newFeedsCount));
                 adapter.notifyDataSetChanged();
-                channelRecyclerView.scrollToPosition(adapter.getItemCount() - 1);
+                channelRecyclerView.scrollToPosition(0);
             }
+            progressBar.setVisibility(View.GONE);
         }
     }
 

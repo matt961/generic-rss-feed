@@ -13,8 +13,9 @@
         android:id="@+id/itemTitleText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:lineSpacingMultiplier="1.25"
         android:textAlignment="center"
-        android:textAllCaps="false"
+        android:textAllCaps="true"
         android:textAppearance="@android:style/TextAppearance.Material.Headline"
         android:textSize="18sp"
         android:typeface="serif"/>
@@ -24,24 +25,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:paddingTop="8dp"
         android:textAlignment="viewStart"
-        android:textStyle="italic"/>
+        android:textStyle="bold|italic"/>
 
     <TextView
         android:id="@+id/itemLinkText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="4dp"
         android:textAlignment="viewStart"
         android:textAppearance="@android:style/TextAppearance.Material.Small"
-        android:textStyle="bold"/>
+        android:textSize="14sp"/>
 
     <TextView
         android:id="@+id/itemAuthorText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textAlignment="viewStart"
+        android:textAlignment="viewEnd"
         android:textAllCaps="false"
-        android:textStyle="italic"/>
+        android:textStyle="bold|italic"/>
 
 </LinearLayout>

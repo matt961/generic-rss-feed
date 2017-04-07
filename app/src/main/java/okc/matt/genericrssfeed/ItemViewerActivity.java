@@ -10,6 +10,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.net.MalformedURLException;
@@ -22,11 +23,11 @@ import MattsRSSUtils.RSSParser;
 
 
 public class ItemViewerActivity extends AppCompatActivity {
-    //fsdg
     public ArrayList<RSSItem> feedItems;
     private RSSItemAdapter adapter;
     private RecyclerView itemsRecyclerView;
     Toolbar toolbar;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(final Bundle savedInstance) {
@@ -53,6 +54,9 @@ public class ItemViewerActivity extends AppCompatActivity {
                 }
             }
         });
+
+        progressBar = (ProgressBar) findViewById(R.id.feedLoadProgress);
+
         itemsRecyclerView.setAdapter(adapter);
         itemsRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -69,6 +73,12 @@ public class ItemViewerActivity extends AppCompatActivity {
     }
 
     private class AsyncFeedDownload extends AsyncTask<URL, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected Void doInBackground(URL... params) {
             try {
@@ -91,6 +101,7 @@ public class ItemViewerActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             adapter.notifyDataSetChanged();
+            progressBar.setVisibility(View.GONE);
         }
     }
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -78,9 +80,9 @@ public class RSSChannelAdapter extends RecyclerView.Adapter<RSSChannelAdapter.Vi
             lastpubdateText.setText(channel.getLastBuildDate().toString());
         } else
             lastpubdateText.setText(String.format("Downloaded %s", new Date().toString()));
-        descriptionText.setText(channel.getDescription());
+        descriptionText.setText(channel.getDescription().trim());
         categoryText.setText(channel.getCategory());
-        if (channel.getChannelImageURL() != null || !channel.getChannelImageURL().isEmpty()) {
+        if (channel.getChannelImageURL() != null && !channel.getChannelImageURL().isEmpty()) {
             try {
                 final URL imgUrl = new URL(channel.getChannelImageURL());
                 new AsyncTask<URL, Void, Bitmap>() {
@@ -98,14 +100,20 @@ public class RSSChannelAdapter extends RecyclerView.Adapter<RSSChannelAdapter.Vi
                     protected void onPostExecute(Bitmap bitmap) {
                         super.onPostExecute(bitmap);
                         if (bitmap != null) {
-                            channelImage.setImageBitmap(bitmap);
+                            RoundedBitmapDrawable rbd = RoundedBitmapDrawableFactory.create(null, bitmap);
+                            rbd.setCircular(true);
+                            channelImage.setBackground(rbd);
                             channelImage.setVisibility(View.VISIBLE);
-                        }
+                        } else
+                            channelImage.setVisibility(View.GONE);
                     }
                 }.execute();
             } catch (MalformedURLException mfe) {
                 Log.v("RSSChannelAdapter", String.format("Could not download image at \"%s\".", channel.getChannelImageURL()), mfe);
+                channelImage.setVisibility(View.GONE);
             }
+        } else {
+            channelImage.setVisibility(View.GONE);
         }
     }
 

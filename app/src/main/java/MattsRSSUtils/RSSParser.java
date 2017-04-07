@@ -89,7 +89,6 @@ public class RSSParser {
                             NodeList imgnodes = channelNodes.item(chnode).getChildNodes();
                             for (int urlnode = 0; urlnode < imgnodes.getLength(); urlnode++) {
                                 if (imgnodes.item(urlnode).getNodeName().equals("url")) {
-                                    // TODO NOTE- probably wont be part of the Android app. We'll see
                                     channelMetaData.setChannelImageURL(imgnodes.item(urlnode).getTextContent());
                                 }
                             }

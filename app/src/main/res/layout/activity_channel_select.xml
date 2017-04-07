@@ -41,4 +41,13 @@
         android:layout_marginRight="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_rss_feed_black_24dp" />
 
+    <ProgressBar
+        android:id="@+id/channelLoadProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:visibility="visible"/>
+
 </RelativeLayout>
